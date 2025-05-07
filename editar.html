@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Música</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 40px;
+            background-color: #f9f9f9;
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 10px;
+            margin: 10px;
+            width: 250px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+        }
+
+        button {
+            padding: 10px 20px;
+            background-color: #1a73e8;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+<h2>Editar Música</h2>
+<form id="form-editar" onsubmit="salvarAlteracoes(event)">
+    <input type="hidden" id="id">
+    <div>
+        <input type="text" id="nome" placeholder="Nome da música" required>
+    </div>
+    <div>
+        <input type="text" id="categoria" placeholder="Categoria" required>
+    </div>
+    <div>
+        <input type="number" step="0.01" id="duracao" placeholder="Duração (min)" required>
+    </div>
+    <button type="submit">Salvar Alterações</button>
+</form>
+
+<script>
+    const params = new URLSearchParams(window.location.search);
+    const id = params.get("id");
+
+    if (!id) {
+        alert("ID inválido.");
+        window.location.href = "index.html";
+    }
+
+    async function carregarMusica() {
+        try {
+            const response = await fetch("http://localhost:8080/musica/buscar-todos");
+            const musicas = await response.json();
+            const musica = musicas.find(m => m.id == id);
+
+            if (!musica) throw new Error("Música não encontrada.");
+
+            document.getElementById("id").value = musica.id;
+            document.getElementById("nome").value = musica.nome;
+            document.getElementById("categoria").value = musica.categoria;
+            document.getElementById("duracao").value = musica.duracao;
+        } catch (error) {
+            alert("Erro ao carregar música: " + error.message);
+            window.location.href = "index.html";
+        }
+    }
+
+    async function salvarAlteracoes(event) {
+        event.preventDefault();
+
+        const musica = {
+            id: parseInt(document.getElementById("id").value),
+            nome: document.getElementById("nome").value,
+            categoria: document.getElementById("categoria").value,
+            duracao: parseFloat(document.getElementById("duracao").value)
+        };
+
+        try {
+            const response = await fetch("http://localhost:8080/musica/alterar", {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(musica)
+            });
+
+            if (!response.ok) throw new Error("Erro ao salvar alterações");
+
+            alert("Música atualizada com sucesso!");
+            window.location.href = "index.html";
+        } catch (error) {
+            alert("Erro: " + error.message);
+        }
+    }
+
+    carregarMusica();
+</script>
+</body>
+</html>

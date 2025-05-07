@@ -1,0 +1,159 @@
+{
+	"info": {
+		"_postman_id": "ef4a89e8-41fc-4a52-b2bc-a45445811bbb",
+		"name": "Projeto Musica",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43885016"
+	},
+	"item": [
+		{
+			"name": "Cantor",
+			"item": [
+				{
+					"name": "buscar cantor numero",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/cantor/numero",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cantor",
+								"numero"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar cantor teste",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/cantor/teste",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"cantor",
+								"teste"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Musica",
+			"item": [
+				{
+					"name": "criar musica",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\":\"Poesia 11\",\r\n    \"categoria\":\"Hip Hop\",\r\n    \"duracao\":5.30\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/musica/criar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"musica",
+								"criar"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "buscar-todos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/musica/buscar-todos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"musica",
+								"buscar-todos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Deleltar musica",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8080/musica/deletar/2",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"musica",
+								"deletar",
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Alterar musica",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n        \"id\": 8,\r\n        \"categoria\": \"rap\",\r\n        \"nome\": \"Poesia doze\",\r\n        \"duracao\": 8.0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8080/musica/alterar",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8080",
+							"path": [
+								"musica",
+								"alterar"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}

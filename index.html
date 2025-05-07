@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Minhas Músicas</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #fff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+
+        header, main {
+            padding: 30px;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 8px;
+            margin: 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            width: 200px;
+        }
+
+        .btn {
+            padding: 10px 16px;
+            margin: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            border: none;
+            border-radius: 6px;
+            color: white;
+        }
+
+        .btn-cadastrar {
+            background-color: #34a853;
+        }
+
+        .btn-buscar {
+            background-color: #1a73e8;
+        }
+
+        table {
+            margin: 30px auto;
+            width: 90%;
+            border-collapse: collapse;
+        }
+
+        th, td {
+            border: 1px solid #ccc;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f1f3f4;
+        }
+
+        .btn-acao {
+            padding: 6px 12px;
+            margin: 0 4px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            color: white;
+        }
+
+        .btn-editar {
+            background-color: #fbbc05;
+        }
+
+        .btn-excluir {
+            background-color: #ea4335;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <h2>Cadastro de Música</h2>
+    <form id="form-musica" onsubmit="cadastrarMusica(event)">
+        <input type="text" id="nome" placeholder="Nome da música" required />
+        <input type="text" id="categoria" placeholder="Categoria" required />
+        <input type="number" step="0.01" id="duracao" placeholder="Duração (min)" required />
+        <button class="btn btn-cadastrar" type="submit">Cadastrar</button>
+    </form>
+
+    <button class="btn btn-buscar" onclick="buscarMusicas()">Buscar Todas as Músicas</button>
+</header>
+
+<main>
+    <table id="tabela-musicas" style="display:none;">
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>Categoria</th>
+            <th>Duração</th>
+            <th>Ações</th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+</main>
+
+<script>
+    async function buscarMusicas() {
+        const tabela = document.getElementById('tabela-musicas');
+        const corpo = tabela.querySelector('tbody');
+        corpo.innerHTML = '';
+
+        try {
+            const response = await fetch('http://localhost:8080/musica/buscar-todos');
+            const musicas = await response.json();
+
+            musicas.forEach(musica => {
+                const linha = document.createElement('tr');
+
+                linha.innerHTML = `
+            <td>${musica.id}</td>
+            <td>${musica.nome}</td>
+            <td>${musica.categoria}</td>
+            <td>${musica.duracao}</td>
+            <td>
+              <button class="btn-acao btn-editar" onclick="alterarMusica(${musica.id})">Alterar</button>
+              <button class="btn-acao btn-excluir" onclick="excluirMusica(${musica.id})">Excluir</button>
+            </td>
+          `;
+
+                corpo.appendChild(linha);
+            });
+
+            tabela.style.display = 'table';
+        } catch (error) {
+            alert('Erro ao buscar músicas: ' + error.message);
+        }
+    }
+
+    async function cadastrarMusica(event) {
+        event.preventDefault();
+
+        const nome = document.getElementById('nome').value;
+        const categoria = document.getElementById('categoria').value;
+        const duracao = parseFloat(document.getElementById('duracao').value);
+
+        try {
+            const response = await fetch('http://localhost:8080/musica/criar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nome, categoria, duracao })
+            });
+
+            if (!response.ok) throw new Error("Erro ao cadastrar música");
+
+            document.getElementById('form-musica').reset();
+            buscarMusicas();
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    async function excluirMusica(id) {
+        if (confirm('Tem certeza que deseja excluir esta música?')) {
+            try {
+                await fetch(`http://localhost:8080/musica/deletar/${id}`, { method: 'DELETE' });
+                buscarMusicas();
+            } catch (error) {
+                alert('Erro ao excluir música: ' + error.message);
+            }
+        }
+    }
+
+    function alterarMusica(id) {
+        window.location.href = `editar.html?id=${id}`;
+    }
+</script>
+</body>
+</html>
